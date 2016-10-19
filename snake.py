@@ -14,7 +14,6 @@ class Snake():
         self.x_dir = 0
         self.y_dir = 0
 
-
     def initialize_snake(self):
         """Initialize snake object."""
         self.x = 400
@@ -23,6 +22,10 @@ class Snake():
                           self.x, self.y)
         self.rect = self.head.rect
         self.tail = []
+        self.moving_right = False
+        self.moving_left = False
+        self.moving_up = False
+        self.moving_down = False
 
 
     def blitme(self):
@@ -32,9 +35,30 @@ class Snake():
 
 
     def set_direction(self, x, y):
-        self.x_dir = x
-        self.y_dir = y
+        if (x == -1 and not self.moving_right or
+            x == 1  and not self.moving_left or
+            y == -1 and not self.moving_down or
+            y == 1  and not self.moving_up):
+            self.x_dir = x
+            self.y_dir = y
+            self.reset_movement_flags()
+            if x == 1:
+                self.moving_right = True
+            elif x == -1:
+                self.moving_left = True
+            elif y == 1:
+                self.moving_down = True
+            elif y == -1:
+                self.moving_up = True
 
+
+    def reset_movement_flags(self):
+        """Reset movement flags to False."""
+        self.moving_right = False
+        self.moving_left = False
+        self.moving_up = False
+        self.moving_down = False
+        
 
     def update(self):
         """Update the position of the snake."""
