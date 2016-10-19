@@ -20,7 +20,7 @@ class Game():
         pygame.display.set_caption(self.settings.caption)
 
         self.snake = Snake(self.screen, self.settings)
-        self.food = func.create_food(self.screen, self.settings)
+        self.food = func.create_food(self.screen, self.settings, self.snake)
 
         self.clock = pygame.time.Clock()
 
@@ -29,6 +29,8 @@ class Game():
         """Main function for Snake."""
         while True:
             func.check_events(self.snake)
+            func.check_edges(self.settings, self.snake)
+            func.check_hit_tail(self.snake)
             func.update_screen(self.screen, self.settings, self.snake, self.food)
 
             self.clock.tick(self.settings.fps)

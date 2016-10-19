@@ -21,7 +21,7 @@ class Snake():
         self.y_dir = 0
         self.head = Block(self.screen, self.settings, self.settings.white,
                           self.x, self.y)
-        self.rect = self.head.rect
+        self.head_rect = self.head.rect
         self.tail = []
         self.moving_right = False
         self.moving_left = False
@@ -57,12 +57,27 @@ class Snake():
         self.moving_down = False
 
 
+    def intersects(self, x, y, head):
+        """
+        Checks if x and y intersects with tail. If head = True
+        then check if head intersects as well.
+        """
+        if head:
+            if x == self.head_rect.x and y == self.head_rect.y:
+                return True
+        else:
+            for block in self.tail:
+                if x == block.rect.x and y == block.rect.y:
+                    return True
+            return False
+
+
     def update(self, ate):
         """Update the position of the snake."""
-        x = self.rect.x
-        y = self.rect.y
-        self.rect.x = self.rect.x + self.scale * self.x_dir
-        self.rect.y = self.rect.y + self.scale * self.y_dir
+        x = self.head_rect.x
+        y = self.head_rect.y
+        self.head_rect.x = self.head_rect.x + self.scale * self.x_dir
+        self.head_rect.y = self.head_rect.y + self.scale * self.y_dir
         if not ate:
             if len(self.tail) > 0:
                 del self.tail[0]
