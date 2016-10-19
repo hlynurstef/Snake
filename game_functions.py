@@ -1,9 +1,14 @@
 import pygame
 from block import Block
+from random import randint
 
-def update_screen(screen, settings, snake):
+def update_screen(screen, settings, snake, food):
     """Update everything on screen and then draw the screen."""
     screen.fill((0, 0, 0))
+
+    if snake_ate_food(snake, food):
+        create_food(screen, settings, food)
+    food.blitme()
 
     snake.update()
     snake.blitme()
@@ -43,8 +48,31 @@ def quit_pygame():
 
 def check_edges(settings, snake):
     """Check if snake is touching the edges."""
-    if ((snake.rect.x + settings.scale >= settings.width) or
-       (snake.rect.x <= 0) or
-       (snake.rect.y + settings.scale >= settings.height) or
-       (snake.rect.y <= 0)):
+    if ((snake.rect.x + settings.scale > settings.width) or
+       (snake.rect.x < 0) or
+       (snake.rect.y + settings.scale > settings.height) or
+       (snake.rect.y < 0)):
         snake.initialize_snake()
+
+
+def create_food(screen, settings, food=None):
+    """Creates a food at a random location."""
+    x = randint(0, settings.width)
+    x = x - (x % settings.scale)
+    y = randint(0, settings.height)
+    y = y - (y % settings.scale)
+    if food is None:
+        food = Block(screen, settings, settings.red, x, y)
+        return food
+    else:
+        food.rect.x = x
+        food.rect.y = y
+
+
+def snake_ate_food(snake, food):
+    """Returns true if the snake has eaten the food."""
+    if (snake.head.rect.x == food.rect.x and
+        snake.head.rect.y == food.rect.y):
+        return True
+    else:
+        return False

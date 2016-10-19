@@ -3,6 +3,7 @@ import ctypes
 import game_functions as func
 from game_settings import Settings
 from snake import Snake
+from block import Block
 
 class Game():
     """A class representing the game."""
@@ -19,6 +20,7 @@ class Game():
         pygame.display.set_caption(self.settings.caption)
 
         self.snake = Snake(self.screen, self.settings)
+        self.food = func.create_food(self.screen, self.settings)
 
         self.clock = pygame.time.Clock()
 
@@ -27,7 +29,7 @@ class Game():
         """Main function for Snake."""
         while True:
             func.check_events(self.snake)
-            func.update_screen(self.screen, self.settings, self.snake)
+            func.update_screen(self.screen, self.settings, self.snake, self.food)
 
             self.clock.tick(self.settings.fps)
 
