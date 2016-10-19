@@ -9,7 +9,6 @@ class Block(Sprite):
         super(Block, self).__init__()
         self.screen = screen
         self.settings = settings
-        self.speed = settings.speed
 
         self.image = pygame.Surface((20, 20))
         self.image.fill(color)

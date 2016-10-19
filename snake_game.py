@@ -2,6 +2,7 @@ import pygame
 import ctypes
 import game_functions as func
 from game_settings import Settings
+from snake import Snake
 
 class Game():
     """A class representing the game."""
@@ -17,7 +18,7 @@ class Game():
         self.screen = pygame.display.set_mode((self.settings.width, self.settings.height))
         pygame.display.set_caption(self.settings.caption)
 
-        self.snake = func.initialize_snake(self.screen, self.settings)
+        self.snake = Snake(self.screen, self.settings)
 
         self.clock = pygame.time.Clock()
 
@@ -25,8 +26,8 @@ class Game():
     def run_game(self):
         """Main function for Snake."""
         while True:
-            func.check_events()
-            func.update_screen(self.screen, self.snake)
+            func.check_events(self.snake)
+            func.update_screen(self.screen, self.settings, self.snake)
 
             self.clock.tick(self.settings.fps)
 

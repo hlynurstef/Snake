@@ -11,6 +11,6 @@ class Settings():
         self.height = 600
         self.caption = "Snake"
 
-        self.fps = 60
+        self.fps = 10
 
-        self.speed = 5
+        self.scale = 20
