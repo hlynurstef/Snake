@@ -9,6 +9,7 @@ def update_screen(screen, settings, snake, food):
     if ate:
         create_food(screen, settings, snake, food)
     food.blitme()
+    #print("(" + str(food.rect.x) + ", " + str(food.rect.y) + ")")
 
     snake.update(ate)
     snake.blitme()
@@ -16,29 +17,54 @@ def update_screen(screen, settings, snake, food):
     pygame.display.update()
 
 
-def check_events(snake):
+def check_events(keys, snake):
     """Check for events and respond to them."""
     for event in pygame.event.get():
         if event.type == pygame.QUIT:
             quit_pygame()
         elif event.type == pygame.KEYDOWN:
-            check_keydown_events(event, snake)
-        break
+            check_keydown_events(event, keys, snake)
+        elif event.type == pygame.KEYUP:
+            check_keyup_events(event, keys)
+        move_snake(keys, snake)
 
 
-def check_keydown_events(event, snake):
+def check_keydown_events(event, keys, snake):
     """Check for keypresses and respond to them."""
-    # TODO: Find a way to prevent player from pressing down + left/right quickly to go backwards.
     if event.key == pygame.K_ESCAPE:
         quit_pygame()
-    if event.key == pygame.K_UP and not snake.moving_down:
-        snake.set_direction(0, -1)
-    elif event.key == pygame.K_DOWN and not snake.moving_up:
-        snake.set_direction(0, 1)
-    elif event.key == pygame.K_LEFT and not snake.moving_right:
-        snake.set_direction(-1, 0)
-    elif event.key == pygame.K_RIGHT and not snake.moving_left:
-        snake.set_direction(1, 0)
+    if event.key == pygame.K_UP:
+        keys['up'] = True
+    if event.key == pygame.K_DOWN:
+        keys['down'] = True
+    if event.key == pygame.K_LEFT:
+        keys['left'] = True
+    if event.key == pygame.K_RIGHT:
+        keys['right'] = True
+
+
+def check_keyup_events(event, keys):
+    """Check for keyreleases and respond to them."""
+    if event.key == pygame.K_UP:
+        keys['up'] = False
+    if event.key == pygame.K_DOWN:
+        keys['down'] = False
+    if event.key == pygame.K_LEFT:
+        keys['left'] = False
+    if event.key == pygame.K_RIGHT:
+        keys['right'] = False
+
+
+def move_snake(keys, snake):
+    """Move snake if only one key is being pressed."""
+    count = 0
+    key_pressed = ''
+    for key, pressed in keys.items():
+        if pressed:
+            key_pressed = key
+            count += 1
+    if count == 1:
+        snake.set_direction(key_pressed)
 
 
 def quit_pygame():
@@ -65,12 +91,13 @@ def check_hit_tail(snake):
 def create_food(screen, settings, snake, food=None):
     """Creates a food at a random location."""
     intersects = True
-    while intersects:
+    while True:
         x = randint(0, settings.width)
         x = x - (x % settings.scale)
         y = randint(0, settings.height)
         y = y - (y % settings.scale)
-        intersects = snake.intersects(x, y, True)
+        if not snake.intersects(x, y, True):
+            break
     if food is None:
         food = Block(screen, settings, settings.red, x, y)
         return food

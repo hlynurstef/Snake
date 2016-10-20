@@ -11,6 +11,7 @@ class Snake():
         self.tail = []
         self.initialize_snake()
         self.scale = settings.scale
+        self.directions = {'up': (0, -1), 'down': (0, 1), 'left': (-1, 0), 'right': (1, 0)}
 
 
     def initialize_snake(self):
@@ -23,10 +24,7 @@ class Snake():
                           self.x, self.y)
         self.head_rect = self.head.rect
         self.tail = []
-        self.moving_right = False
-        self.moving_left = False
-        self.moving_up = False
-        self.moving_down = False
+        self.movement = {'up': False, 'down': False, 'left': False, 'right': False}
 
 
     def blitme(self):
@@ -35,39 +33,46 @@ class Snake():
             block.blitme()
 
 
-    def set_direction(self, x, y):
-        self.x_dir = x
-        self.y_dir = y
-        self.reset_movement_flags()
-        if x == 1:
-            self.moving_right = True
-        elif x == -1:
-            self.moving_left = True
-        elif y == 1:
-            self.moving_down = True
-        elif y == -1:
-            self.moving_up = True
+    def set_direction(self, key):
+        x_dir = self.directions[key][0]
+        y_dir = self.directions[key][1]
+        if self.coast_is_clear(x_dir, y_dir):
+            self.x_dir = self.directions[key][0]
+            self.y_dir = self.directions[key][1]
+            self.reset_movement()
+            self.movement[key] = True
 
 
-    def reset_movement_flags(self):
+    def coast_is_clear(self, x_dir, y_dir):
+        """Returns true if head is not trying to move into tail."""
+        x = self.head_rect.x + self.scale * x_dir
+        y = self.head_rect.y + self.scale * y_dir
+        if len(self.tail) > 0:
+            if self.tail[-1].rect.x == x and self.tail[-1].rect.y == y:
+                return False
+            return True
+        else:
+            return True
+
+
+    def reset_movement(self):
         """Reset movement flags to False."""
-        self.moving_right = False
-        self.moving_left = False
-        self.moving_up = False
-        self.moving_down = False
+        self.movement = {'up': False, 'down': False, 'left': False, 'right': False}
 
 
     def intersects(self, x, y, head):
         """
-        Checks if x and y intersects with tail. If head = True
+        Checks if x and y intersects with tail. If head == True
         then check if head intersects as well.
         """
         if head:
             if x == self.head_rect.x and y == self.head_rect.y:
+                print("intersects with head")
                 return True
         else:
             for block in self.tail:
                 if x == block.rect.x and y == block.rect.y:
+                    print("intersects with tail")
                     return True
             return False
 
