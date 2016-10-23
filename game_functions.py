@@ -2,10 +2,10 @@ import pygame
 from block import Block
 from random import randint
 
-def update_screen(screen, settings, snake, food):
+def update_screen(screen, settings, sounds, snake, food):
     """Update everything on screen and then draw the screen."""
     screen.fill(settings.black)
-    ate = snake_ate_food(snake, food)
+    ate = snake_ate_food(sounds, snake, food)
     if ate:
         create_food(screen, settings, snake, food)
     food.blitme()
@@ -73,18 +73,20 @@ def quit_pygame():
     quit()
 
 
-def check_edges(settings, snake):
+def check_edges(settings, sounds, snake):
     """Check if snake is beyond the edges."""
     if ((snake.head_rect.x + settings.scale > settings.width) or
        (snake.head_rect.x < 0) or
        (snake.head_rect.y + settings.scale > settings.height) or
        (snake.head_rect.y < 0)):
-        snake.initialize_snake()
+       sounds.hurt.play()
+       snake.initialize_snake()
 
 
-def check_hit_tail(snake):
+def check_hit_tail(sounds, snake):
     """Check if snake hits its own tail."""
     if snake.intersects(snake.head_rect.x, snake.head_rect.y, False):
+        sounds.hurt.play()
         snake.initialize_snake()
 
 
@@ -106,11 +108,11 @@ def create_food(screen, settings, snake, food=None):
         food.rect.y = y
 
 
-def snake_ate_food(snake, food):
+def snake_ate_food(sounds, snake, food):
     """Returns true if the snake has eaten the food."""
     if (snake.head_rect.x == food.rect.x and
         snake.head_rect.y == food.rect.y):
-        #snake.add_tail()
+        sounds.eat_food.play()
         return True
     else:
         return False

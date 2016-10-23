@@ -67,12 +67,10 @@ class Snake():
         """
         if head:
             if x == self.head_rect.x and y == self.head_rect.y:
-                print("intersects with head")
                 return True
         else:
             for block in self.tail:
                 if x == block.rect.x and y == block.rect.y:
-                    print("intersects with tail")
                     return True
             return False
 
