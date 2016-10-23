@@ -31,6 +31,7 @@ class Game():
 
     def run_game(self):
         """Main function for Snake."""
+        self.sounds.music.play(-1)
         while True:
             func.check_events(self.keys, self.snake)
             func.check_edges(self.settings, self.sounds, self.snake)
